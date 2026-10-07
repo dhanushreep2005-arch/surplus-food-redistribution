@@ -1,0 +1,35 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+      <div class="card form-card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+          <h3 class="fw-bold mb-4">Edit Pickup</h3>
+
+          <form action="/pickups/<%= pickup._id %>?_method=PUT" method="POST">
+            <div class="mb-3">
+              <label class="form-label">Food Item</label>
+              <input type="text" class="form-control" value="<%= pickup.donation ? pickup.donation.foodName : 'N/A' %>" disabled>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Pickup Location</label>
+              <input type="text" name="pickupLocation" class="form-control" value="<%= pickup.pickupLocation %>" required>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Delivery Location</label>
+              <input type="text" name="deliveryLocation" class="form-control" value="<%= pickup.deliveryLocation %>" required>
+            </div>
+
+            <button type="submit" class="btn btn-warning w-100 fw-semibold py-2">Update Pickup</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

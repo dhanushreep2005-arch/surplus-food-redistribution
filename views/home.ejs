@@ -1,0 +1,81 @@
+<%- include("partials/navbar") %>
+<%- include("partials/flash") %>
+
+<!-- HERO SECTION -->
+<section class="hero-section d-flex align-items-center">
+  <div class="hero-overlay"></div>
+  <div class="container position-relative text-center text-white py-5">
+    <h1 class="display-4 fw-bold mb-3">A meal shared is a smile shared.</h1>
+    <p class="lead mb-4">
+      Connecting donors with surplus food to NGOs and volunteers &mdash;
+      so no plate goes to waste and no one goes hungry.
+    </p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <a href="/register" class="btn btn-warning btn-lg fw-semibold px-4">Get Started</a>
+      <a href="/donations" class="btn btn-outline-light btn-lg px-4">Browse Donations</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="container py-5">
+  <h2 class="text-center fw-bold mb-2">How It Works</h2>
+  <p class="text-center text-muted mb-5">Three simple roles, one shared goal.</p>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="feature-card h-100 p-4 text-center shadow-sm">
+        <div class="feature-icon mb-3"><i class="bi bi-egg-fried"></i></div>
+        <h5 class="fw-bold">Donors</h5>
+        <p class="text-muted mb-0">
+          Restaurants, event halls and households post surplus food before it goes to waste.
+        </p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card h-100 p-4 text-center shadow-sm">
+        <div class="feature-icon mb-3"><i class="bi bi-people-fill"></i></div>
+        <h5 class="fw-bold">NGOs</h5>
+        <p class="text-muted mb-0">
+          Verified NGOs browse available food and accept donations for their communities.
+        </p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card h-100 p-4 text-center shadow-sm">
+        <div class="feature-icon mb-3"><i class="bi bi-bicycle"></i></div>
+        <h5 class="fw-bold">Volunteers</h5>
+        <p class="text-muted mb-0">
+          Volunteers pick up accepted food and deliver it safely to the NGO on time.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE / MISSION BANNER -->
+<section class="mission-banner text-center text-white py-5">
+  <div class="container">
+    <p class="fs-3 fst-italic mb-0">"Don't waste food. Share it with someone who needs it."</p>
+  </div>
+</section>
+
+<!-- IMAGE STRIP -->
+<section class="container py-5">
+  <div class="row g-4 text-center">
+    <div class="col-md-4">
+      <img src="/images/donation.jpeg" alt="Food donation" class="img-fluid rounded-4 shadow-sm mb-2 strip-img">
+      <p class="fw-semibold">Surplus food ready to be shared</p>
+    </div>
+    <div class="col-md-4">
+      <img src="/images/ngo.jpeg" alt="NGO distributing food" class="img-fluid rounded-4 shadow-sm mb-2 strip-img">
+      <p class="fw-semibold">NGOs reaching those in need</p>
+    </div>
+    <div class="col-md-4">
+      <img src="/images/volunteer.jpeg" alt="Volunteer delivering food" class="img-fluid rounded-4 shadow-sm mb-2 strip-img">
+      <p class="fw-semibold">Volunteers completing the journey</p>
+    </div>
+  </div>
+</section>
+
+<%- include("partials/footer") %>

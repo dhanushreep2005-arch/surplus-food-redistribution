@@ -1,0 +1,42 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">All Food Donations</h2>
+    <% if (currentUser.role === "donor") { %>
+      <a href="/donations/new" class="btn btn-warning fw-semibold"><i class="bi bi-plus-lg"></i> Donate Food</a>
+    <% } %>
+  </div>
+
+  <% if (donations.length === 0) { %>
+    <div class="empty-state text-center py-5">
+      <p class="text-muted mb-0">No donations posted yet.</p>
+    </div>
+  <% } else { %>
+    <div class="row g-4">
+      <% donations.filter(donation => donation.status === "pending").forEach(donation => { %>
+        <div class="col-md-6 col-lg-4">
+          <div class="donation-card h-100 shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="fw-bold mb-0"><%= donation.foodName %></h5>
+                <%- include("../partials/statusBadge", { status: donation.status }) %>
+              </div>
+              <p class="mb-1"><i class="bi bi-box-seam me-1"></i><%= donation.quantity %> <%= donation.unit %></p>
+              <p class="mb-1"><i class="bi bi-geo-alt me-1"></i><%= donation.location %></p>
+              <p class="mb-1"><i class="bi bi-person me-1"></i>Donor: <%= donation.donor ? donation.donor.name : "N/A" %></p>
+              <p class="mb-1"><i class="bi bi-clock me-1"></i><%= getRemainingTime(donation.expiryAt) %></p>
+              <span class="badge <%= getUrgencyBadgeClass(getUrgencyLevel(donation.expiryAt)) %> mb-2">
+                Urgency: <%= getUrgencyLevel(donation.expiryAt) %>
+              </span>
+              <a href="/donations/<%= donation._id %>" class="btn btn-sm btn-outline-secondary w-100 mt-2">View</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<%- include("../partials/footer") %>

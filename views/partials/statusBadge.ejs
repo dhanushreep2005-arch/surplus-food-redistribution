@@ -1,0 +1,13 @@
+<%
+  // Expects a local variable `status` to be passed in when this partial is included
+  // from a parent view (see donations/show.ejs for an example).
+  let badgeClass = "bg-secondary";
+  let label = status;
+
+  if (status === "pending") { badgeClass = "bg-warning text-dark"; label = "PENDING"; }
+  else if (status === "accepted") { badgeClass = "bg-info text-dark"; label = "ACCEPTED"; }
+  else if (status === "picked_up") { badgeClass = "bg-primary"; label = "PICKED UP"; }
+  else if (status === "delivered") { badgeClass = "bg-success"; label = "DELIVERED"; }
+  else if (status === "expired") { badgeClass = "bg-dark"; label = "EXPIRED"; }
+%>
+<span class="badge status-badge <%= badgeClass %>"><%= label %></span>

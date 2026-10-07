@@ -1,0 +1,35 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card show-card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+          <h3 class="fw-bold mb-3">Request Details</h3>
+
+          <p><strong>Food Item:</strong> <%= request.donation ? request.donation.foodName : "N/A" %></p>
+          <p><strong>Quantity Requested:</strong> <%= request.quantityRequested %></p>
+          <p><strong>Requested By (NGO):</strong> <%= request.ngo ? request.ngo.name : "N/A" %></p>
+          <p><strong>Status:</strong> <span class="badge bg-secondary text-uppercase"><%= request.status %></span></p>
+          <p><strong>Requested On:</strong> <%= request.createdAt.toDateString() %></p>
+          <% if (request.message) { %>
+            <p><strong>Message:</strong> <%= request.message %></p>
+          <% } %>
+
+          <div class="d-flex gap-2 mt-4">
+            <% if (currentUser.role === "ngo" && String(request.ngo._id) === String(currentUser._id)) { %>
+              <a href="/requests/<%= request._id %>/edit" class="btn btn-outline-primary">Edit</a>
+              <form action="/requests/<%= request._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this request?');">
+                <button type="submit" class="btn btn-outline-danger">Delete</button>
+              </form>
+            <% } %>
+            <a href="/requests" class="btn btn-outline-secondary">Back to List</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

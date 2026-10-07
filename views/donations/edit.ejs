@@ -1,0 +1,71 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+      <div class="card form-card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+          <h3 class="fw-bold mb-4">Edit Donation</h3>
+
+          <form action="/donations/<%= donation._id %>?_method=PUT" method="POST">
+            <div class="mb-3">
+              <label class="form-label">Food Name</label>
+              <input type="text" name="foodName" class="form-control" value="<%= donation.foodName %>" required>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Food Type</label>
+                <select name="foodType" class="form-select" required>
+                  <% ["Veg","Non-Veg","Bakery","Packaged","Other"].forEach(type => { %>
+                    <option value="<%= type %>" <%= donation.foodType === type ? "selected" : "" %>><%= type %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label class="form-label">Quantity</label>
+                <input type="number" name="quantity" class="form-control" value="<%= donation.quantity %>" min="1" required>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label class="form-label">Unit</label>
+                <select name="unit" class="form-select" required>
+                  <% ["packets","kg","pieces","plates","litres"].forEach(u => { %>
+                    <option value="<%= u %>" <%= donation.unit === u ? "selected" : "" %>><%= u %></option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Prepared At</label>
+                <input type="datetime-local" name="preparedAt" class="form-control"
+                  value="<%= donation.preparedAt.toISOString().slice(0,16) %>" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Expiry At</label>
+                <input type="datetime-local" name="expiryAt" class="form-control"
+                  value="<%= donation.expiryAt.toISOString().slice(0,16) %>" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Pickup Location</label>
+              <input type="text" name="location" class="form-control" value="<%= donation.location %>" required>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Description (optional)</label>
+              <textarea name="description" class="form-control" rows="3"><%= donation.description %></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-warning w-100 fw-semibold py-2">Update Donation</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

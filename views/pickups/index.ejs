@@ -1,0 +1,46 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Pickups</h2>
+    <% if (currentUser.role === "volunteer") { %>
+      <a href="/pickups/new" class="btn btn-warning fw-semibold"><i class="bi bi-plus-lg"></i> New Pickup</a>
+    <% } %>
+  </div>
+
+  <% if (pickups.length === 0) { %>
+    <div class="empty-state text-center py-5">
+      <p class="text-muted mb-0">No pickup records yet.</p>
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle bg-white shadow-sm rounded">
+        <thead class="table-light">
+          <tr>
+            <th>Food Item</th>
+            <th>Pickup Location</th>
+            <th>Delivery Location</th>
+            <th>Volunteer</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% pickups.forEach(pickup => { %>
+            <tr>
+              <td><%= pickup.donation ? pickup.donation.foodName : "N/A" %></td>
+              <td><%= pickup.pickupLocation %></td>
+              <td><%= pickup.deliveryLocation %></td>
+              <td><%= pickup.volunteer ? pickup.volunteer.name : "N/A" %></td>
+              <td><span class="badge bg-secondary text-uppercase"><%= pickup.status %></span></td>
+              <td><a href="/pickups/<%= pickup._id %>" class="btn btn-sm btn-outline-secondary">View</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
+
+<%- include("../partials/footer") %>

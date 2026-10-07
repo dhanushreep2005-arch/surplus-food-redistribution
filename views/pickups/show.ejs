@@ -1,0 +1,33 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card show-card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+          <h3 class="fw-bold mb-3">Pickup Details</h3>
+
+          <p><strong>Food Item:</strong> <%= pickup.donation ? pickup.donation.foodName : "N/A" %></p>
+          <p><strong>Pickup Location:</strong> <%= pickup.pickupLocation %></p>
+          <p><strong>Delivery Location:</strong> <%= pickup.deliveryLocation %></p>
+          <p><strong>Volunteer:</strong> <%= pickup.volunteer ? pickup.volunteer.name : "N/A" %></p>
+          <p><strong>Status:</strong> <span class="badge bg-secondary text-uppercase"><%= pickup.status %></span></p>
+          <p><strong>Created On:</strong> <%= pickup.createdAt.toDateString() %></p>
+
+          <div class="d-flex gap-2 mt-4">
+            <% if (currentUser.role === "volunteer" && String(pickup.volunteer._id) === String(currentUser._id)) { %>
+              <a href="/pickups/<%= pickup._id %>/edit" class="btn btn-outline-primary">Edit</a>
+              <form action="/pickups/<%= pickup._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this pickup?');">
+                <button type="submit" class="btn btn-outline-danger">Delete</button>
+              </form>
+            <% } %>
+            <a href="/pickups" class="btn btn-outline-secondary">Back to List</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

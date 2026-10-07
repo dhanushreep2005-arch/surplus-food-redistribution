@@ -1,0 +1,73 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+      <div class="card form-card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+          <h3 class="fw-bold mb-4">Donate Surplus Food</h3>
+
+          <form action="/donations" method="POST">
+            <div class="mb-3">
+              <label class="form-label">Food Name</label>
+              <input type="text" name="foodName" class="form-control" placeholder="e.g. Vegetable Rice" required>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Food Type</label>
+                <select name="foodType" class="form-select" required>
+                  <option value="Veg">Veg</option>
+                  <option value="Non-Veg">Non-Veg</option>
+                  <option value="Bakery">Bakery</option>
+                  <option value="Packaged">Packaged</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label class="form-label">Quantity</label>
+                <input type="number" name="quantity" class="form-control" min="1" required>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label class="form-label">Unit</label>
+                <select name="unit" class="form-select" required>
+                  <option value="packets">packets</option>
+                  <option value="kg">kg</option>
+                  <option value="pieces">pieces</option>
+                  <option value="plates">plates</option>
+                  <option value="litres">litres</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Prepared At</label>
+                <input type="datetime-local" name="preparedAt" class="form-control" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Expiry At</label>
+                <input type="datetime-local" name="expiryAt" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Pickup Location</label>
+              <input type="text" name="location" class="form-control" placeholder="e.g. Indiranagar, Bengaluru" required>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Description (optional)</label>
+              <textarea name="description" class="form-control" rows="3" placeholder="Any extra details about the food..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-warning w-100 fw-semibold py-2">Post Donation</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

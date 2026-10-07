@@ -1,0 +1,45 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+      <div class="card form-card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+          <h3 class="fw-bold mb-4">Create Pickup Task</h3>
+
+          <% if (donations.length === 0) { %>
+            <p class="text-muted">There are no accepted donations that need a volunteer right now.</p>
+          <% } else { %>
+            <form action="/pickups" method="POST">
+              <div class="mb-3">
+                <label class="form-label">Select Donation</label>
+                <select name="donation" class="form-select" required>
+                  <% donations.forEach(donation => { %>
+                    <option value="<%= donation._id %>">
+                      <%= donation.foodName %> (<%= donation.quantity %> <%= donation.unit %>)
+                    </option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Pickup Location</label>
+                <input type="text" name="pickupLocation" class="form-control" placeholder="Where to pick up the food" required>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label">Delivery Location</label>
+                <input type="text" name="deliveryLocation" class="form-control" placeholder="NGO delivery address" required>
+              </div>
+
+              <button type="submit" class="btn btn-warning w-100 fw-semibold py-2">Create Pickup</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

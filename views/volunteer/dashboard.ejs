@@ -1,0 +1,126 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <h2 class="fw-bold mb-1">Welcome, <%= currentUser.name %> 👋</h2>
+  <p class="text-muted mb-4">Your pickup and delivery tasks.</p>
+
+  <!-- AVAILABLE PICKUPS (not yet accepted by any volunteer) -->
+  <h4 class="fw-bold mb-3">Available Pickups</h4>
+  <% if (availablePickups.length === 0) { %>
+    <div class="empty-state text-center py-4 mb-5">
+      <p class="text-muted mb-0">No pickups available right now.</p>
+    </div>
+  <% } else { %>
+    <div class="row g-4 mb-5">
+      <% availablePickups.forEach(pickup => { %>
+        <% const donation = pickup.donation; %>
+        <div class="col-md-6 col-lg-4">
+          <div class="donation-card h-100 shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="fw-bold mb-0"><%= donation ? donation.foodName : "N/A" %></h5>
+                <%- include("../partials/statusBadge", { status: donation ? donation.status : "accepted" }) %>
+              </div>
+              <p class="mb-1"><i class="bi bi-box-seam me-1"></i><%= donation ? donation.quantity : "" %> <%= donation ? donation.unit : "" %></p>
+              <p class="mb-1"><i class="bi bi-geo-alt-fill me-1"></i>Pickup: <%= pickup.pickupLocation %></p>
+              <p class="mb-1"><i class="bi bi-geo-alt me-1"></i>Deliver to: <%= donation && donation.ngo ? donation.ngo.name : "NGO" %></p>
+              <p class="mb-2">Status: ACCEPTED</p>
+              <form action="/pickups/<%= pickup._id %>/accept?_method=PATCH" method="POST">
+                <button type="submit" class="btn btn-sm btn-warning w-100 fw-semibold">Accept Pickup</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- MY ASSIGNED PICKUPS (accepted by me, not yet physically picked up) -->
+  <h4 class="fw-bold mb-3">My Assigned Pickups</h4>
+  <% if (myAssignedPickups.length === 0) { %>
+    <div class="empty-state text-center py-4 mb-5">
+      <p class="text-muted mb-0">No pickups assigned to you yet.</p>
+    </div>
+  <% } else { %>
+    <div class="row g-4 mb-5">
+      <% myAssignedPickups.forEach(pickup => { %>
+        <% const donation = pickup.donation; %>
+        <div class="col-md-6 col-lg-4">
+          <div class="donation-card h-100 shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="fw-bold mb-0"><%= donation ? donation.foodName : "N/A" %></h5>
+                <%- include("../partials/statusBadge", { status: donation ? donation.status : "accepted" }) %>
+              </div>
+              <p class="mb-1"><i class="bi bi-geo-alt-fill me-1"></i>Pickup: <%= pickup.pickupLocation %></p>
+              <p class="mb-1"><i class="bi bi-geo-alt me-1"></i>Deliver to: <%= donation && donation.ngo ? donation.ngo.name : "NGO" %></p>
+              <p class="mb-2">Status: ACCEPTED &mdash; Ready for pickup</p>
+              <% if (donation) { %>
+                <form action="/donations/<%= donation._id %>/pickup?_method=PATCH" method="POST">
+                  <button type="submit" class="btn btn-sm btn-warning w-100 fw-semibold">Mark Picked Up</button>
+                </form>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- ACTIVE PICKUPS -->
+  <h4 class="fw-bold mb-3">Active Pickups</h4>
+  <% if (activePickups.length === 0) { %>
+    <div class="empty-state text-center py-4 mb-5">
+      <p class="text-muted mb-0">You have no active pickups.</p>
+    </div>
+  <% } else { %>
+    <div class="row g-4 mb-5">
+      <% activePickups.forEach(pickup => { %>
+        <% const donation = pickup.donation; %>
+        <div class="col-md-6 col-lg-4">
+          <div class="donation-card h-100 shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="fw-bold mb-0"><%= donation ? donation.foodName : "N/A" %></h5>
+                <%- include("../partials/statusBadge", { status: donation ? donation.status : "picked_up" }) %>
+              </div>
+              <p class="mb-1"><i class="bi bi-geo-alt me-1"></i>Deliver to: <%= donation && donation.ngo ? donation.ngo.name : "NGO" %></p>
+              <p class="mb-2">Status: PICKED UP</p>
+              <% if (donation) { %>
+                <form action="/donations/<%= donation._id %>/deliver?_method=PATCH" method="POST">
+                  <button type="submit" class="btn btn-sm btn-success w-100 fw-semibold">Mark Delivered</button>
+                </form>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- COMPLETED DELIVERIES -->
+  <h4 class="fw-bold mb-3">Completed Deliveries</h4>
+  <% if (completedDeliveries.length === 0) { %>
+    <div class="empty-state text-center py-4">
+      <p class="text-muted mb-0">No completed deliveries yet.</p>
+    </div>
+  <% } else { %>
+    <div class="row g-4">
+      <% completedDeliveries.forEach(pickup => { %>
+        <% const donation = pickup.donation; %>
+        <div class="col-md-6 col-lg-4">
+          <div class="donation-card h-100 shadow-sm">
+            <div class="card-body">
+              <h5 class="fw-bold mb-2"><%= donation ? donation.foodName : "N/A" %></h5>
+              <p class="mb-1"><i class="bi bi-person me-1"></i>NGO: <%= donation && donation.ngo ? donation.ngo.name : "N/A" %></p>
+              <p class="fw-bold text-success mb-0">✓ DELIVERY COMPLETED</p>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<%- include("../partials/footer") %>

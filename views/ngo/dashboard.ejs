@@ -1,0 +1,104 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <h2 class="fw-bold mb-1">Welcome, <%= currentUser.name %> 👋</h2>
+  <p class="text-muted mb-4">Browse and manage food donations for your NGO.</p>
+
+  <!-- AVAILABLE DONATIONS -->
+  <!-- <h4 class="fw-bold mb-3">Available Donations</h4>
+  <% if (availableDonations.length === 0) { %>
+    <div class="empty-state text-center py-4 mb-5">
+      <p class="text-muted mb-0">No pending donations right now. Check back soon!</p>
+    </div>
+  <% } else { %>
+    <div class="row g-4 mb-5">
+      <% availableDonations.forEach(donation => { %>
+        <div class="col-md-6 col-lg-4">
+          <div class="donation-card h-100 shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="fw-bold mb-0"><%= donation.foodName %></h5>
+                <%- include("../partials/statusBadge", { status: donation.status }) %>
+              </div>
+              <p class="mb-1"><i class="bi bi-box-seam me-1"></i><%= donation.quantity %> <%= donation.unit %></p>
+              <p class="mb-1"><i class="bi bi-geo-alt me-1"></i><%= donation.location %></p>
+              <p class="mb-1"><i class="bi bi-person me-1"></i>Donor: <%= donation.donor.name %></p>
+              <p class="mb-1"><i class="bi bi-clock me-1"></i><%= getRemainingTime(donation.expiryAt) %></p>
+              <span class="badge <%= getUrgencyBadgeClass(getUrgencyLevel(donation.expiryAt)) %> mb-2">
+                Urgency: <%= getUrgencyLevel(donation.expiryAt) %>
+              </span>
+
+              <div class="d-flex gap-2 mt-2">
+                <a href="/donations/<%= donation._id %>" class="btn btn-sm btn-outline-secondary flex-fill">View Details</a>
+                <form action="/donations/<%= donation._id %>/accept?_method=PATCH" method="POST" class="flex-fill">
+                  <button type="submit" class="btn btn-sm btn-warning w-100 fw-semibold">Accept Food</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %> -->
+
+  <!-- ACCEPTED DONATIONS -->
+  <h4 class="fw-bold mb-3">Accepted Donations</h4>
+  <% if (acceptedDonations.length === 0) { %>
+    <div class="empty-state text-center py-4 mb-5">
+      <p class="text-muted mb-0">No donations accepted yet.</p>
+    </div>
+  <% } else { %>
+    <div class="row g-4 mb-5">
+      <% acceptedDonations.forEach(donation => { %>
+        <div class="col-md-6 col-lg-4">
+          <div class="donation-card h-100 shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="fw-bold mb-0"><%= donation.foodName %></h5>
+                <%- include("../partials/statusBadge", { status: donation.status }) %>
+              </div>
+              <p class="mb-1"><i class="bi bi-person me-1"></i>Donor: <%= donation.donor.name %></p>
+              <p class="mb-1">
+                <i class="bi bi-truck me-1"></i>
+                Volunteer: <%= donation.volunteer ? donation.volunteer.name : "Not yet assigned" %>
+              </p>
+              <% if (donation.status === "accepted") { %>
+                <p class="mb-1 fw-semibold">✓ Accepted</p>
+              <% } else if (donation.status === "picked_up") { %>
+                <p class="mb-1 fw-semibold text-primary">Status: PICKED UP</p>
+              <% } %>
+              <a href="/donations/<%= donation._id %>" class="btn btn-sm btn-outline-secondary w-100 mt-2">View Details</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- RECEIVED DONATIONS -->
+  <h4 class="fw-bold mb-3">Received Donations</h4>
+  <% if (receivedDonations.length === 0) { %>
+    <div class="empty-state text-center py-4">
+      <p class="text-muted mb-0">No donations received yet.</p>
+    </div>
+  <% } else { %>
+    <div class="row g-4">
+      <% receivedDonations.forEach(donation => { %>
+        <div class="col-md-6 col-lg-4">
+          <div class="donation-card h-100 shadow-sm">
+            <div class="card-body">
+              <h5 class="fw-bold mb-2"><%= donation.foodName %></h5>
+              <p class="mb-1"><i class="bi bi-person me-1"></i>Donor: <%= donation.donor.name %></p>
+              <p class="mb-2"><i class="bi bi-truck me-1"></i>Volunteer: <%= donation.volunteer ? donation.volunteer.name : "N/A" %></p>
+              <p class="fw-bold text-success mb-2">✓ FOOD RECEIVED</p>
+              <a href="/donations/<%= donation._id %>" class="btn btn-sm btn-outline-secondary w-100">View Details</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<%- include("../partials/footer") %>

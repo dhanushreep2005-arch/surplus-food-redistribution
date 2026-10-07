@@ -1,0 +1,46 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Food Requests</h2>
+    <% if (currentUser.role === "ngo") { %>
+      <a href="/requests/new" class="btn btn-warning fw-semibold"><i class="bi bi-plus-lg"></i> New Request</a>
+    <% } %>
+  </div>
+
+  <% if (requests.length === 0) { %>
+    <div class="empty-state text-center py-5">
+      <p class="text-muted mb-0">No requests yet.</p>
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle bg-white shadow-sm rounded">
+        <thead class="table-light">
+          <tr>
+            <th>Food Item</th>
+            <th>Quantity Requested</th>
+            <th>NGO</th>
+            <th>Status</th>
+            <th>Requested On</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% requests.forEach(request => { %>
+            <tr>
+              <td><%= request.donation ? request.donation.foodName : "N/A" %></td>
+              <td><%= request.quantityRequested %></td>
+              <td><%= request.ngo ? request.ngo.name : "N/A" %></td>
+              <td><span class="badge bg-secondary text-uppercase"><%= request.status %></span></td>
+              <td><%= request.createdAt.toDateString() %></td>
+              <td><a href="/requests/<%= request._id %>" class="btn btn-sm btn-outline-secondary">View</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
+
+<%- include("../partials/footer") %>

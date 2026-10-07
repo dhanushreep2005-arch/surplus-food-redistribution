@@ -1,0 +1,88 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <h2 class="fw-bold mb-1">Welcome, <%= currentUser.name %> 👋</h2>
+  <p class="text-muted mb-4">Here's an overview of your food donations.</p>
+
+  <!-- STATS -->
+  <div class="row g-3 mb-5">
+    <div class="col-6 col-md-2-4 col-lg">
+      <div class="stat-card text-center p-3 shadow-sm">
+        <h3 class="fw-bold mb-0"><%= stats.total %></h3>
+        <small class="text-muted">Total</small>
+      </div>
+    </div>
+    <div class="col-6 col-lg">
+      <div class="stat-card text-center p-3 shadow-sm">
+        <h3 class="fw-bold mb-0 text-warning"><%= stats.pending %></h3>
+        <small class="text-muted">Pending</small>
+      </div>
+    </div>
+    <div class="col-6 col-lg">
+      <div class="stat-card text-center p-3 shadow-sm">
+        <h3 class="fw-bold mb-0 text-info"><%= stats.accepted %></h3>
+        <small class="text-muted">Accepted</small>
+      </div>
+    </div>
+    <div class="col-6 col-lg">
+      <div class="stat-card text-center p-3 shadow-sm">
+        <h3 class="fw-bold mb-0 text-primary"><%= stats.picked_up %></h3>
+        <small class="text-muted">Picked Up</small>
+      </div>
+    </div>
+    <div class="col-6 col-lg">
+      <div class="stat-card text-center p-3 shadow-sm">
+        <h3 class="fw-bold mb-0 text-success"><%= stats.delivered %></h3>
+        <small class="text-muted">Delivered</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0">My Recent Donations</h4>
+    <a href="/donations/new" class="btn btn-warning fw-semibold"><i class="bi bi-plus-lg"></i> Donate Food</a>
+  </div>
+
+  <% if (donations.length === 0) { %>
+    <div class="empty-state text-center py-5">
+      <p class="text-muted mb-3">You haven't posted any donations yet.</p>
+      <a href="/donations/new" class="btn btn-warning">Post Your First Donation</a>
+    </div>
+  <% } else { %>
+    <div class="row g-4">
+      <% donations.forEach(donation => { %>
+        <div class="col-md-6 col-lg-4">
+          <div class="donation-card h-100 shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="fw-bold mb-0"><%= donation.foodName %></h5>
+                <%- include("../partials/statusBadge", { status: donation.status }) %>
+              </div>
+              <p class="mb-1"><i class="bi bi-box-seam me-1"></i><%= donation.quantity %> <%= donation.unit %></p>
+              <p class="mb-1"><i class="bi bi-geo-alt me-1"></i><%= donation.location %></p>
+              <p class="mb-1 small text-muted">Posted: <%= donation.createdAt.toDateString() %></p>
+              <p class="mb-1">
+                <i class="bi bi-clock me-1"></i>
+                <%= getRemainingTime(donation.expiryAt) %>
+              </p>
+              <span class="badge <%= getUrgencyBadgeClass(getUrgencyLevel(donation.expiryAt)) %>">
+                Urgency: <%= getUrgencyLevel(donation.expiryAt) %>
+              </span>
+
+              <div class="d-flex gap-2 mt-3">
+                <a href="/donations/<%= donation._id %>" class="btn btn-sm btn-outline-secondary flex-fill">View</a>
+                <a href="/donations/<%= donation._id %>/edit" class="btn btn-sm btn-outline-primary flex-fill">Edit</a>
+                <form action="/donations/<%= donation._id %>?_method=DELETE" method="POST" class="flex-fill" onsubmit="return confirm('Delete this donation?');">
+                  <button type="submit" class="btn btn-sm btn-outline-danger w-100">Delete</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<%- include("../partials/footer") %>

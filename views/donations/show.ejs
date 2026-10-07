@@ -1,0 +1,86 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card show-card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <h3 class="fw-bold mb-0"><%= donation.foodName %></h3>
+            <%- include("../partials/statusBadge", { status: donation.status }) %>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <p><strong>Food Type:</strong> <%= donation.foodType %></p>
+              <p><strong>Quantity:</strong> <%= donation.quantity %> <%= donation.unit %></p>
+              <p><strong>Location:</strong> <%= donation.location %></p>
+              <p><strong>Prepared At:</strong> <%= donation.preparedAt.toLocaleString() %></p>
+              <p><strong>Expiry At:</strong> <%= donation.expiryAt.toLocaleString() %></p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>⏱ Remaining Time:</strong> <%= getRemainingTime(donation.expiryAt) %></p>
+              <p>
+                <strong>Urgency:</strong>
+                <span class="badge <%= getUrgencyBadgeClass(getUrgencyLevel(donation.expiryAt)) %>">
+                  <%= getUrgencyLevel(donation.expiryAt) %>
+                </span>
+              </p>
+              <p><strong>Donor:</strong> <%= donation.donor ? donation.donor.name : "N/A" %></p>
+              <p><strong>NGO:</strong> <%= donation.ngo ? donation.ngo.name : "Not accepted yet" %></p>
+              <p><strong>Volunteer:</strong> <%= donation.volunteer ? donation.volunteer.name : "Not assigned yet" %></p>
+            </div>
+          </div>
+
+          <% if (donation.description) { %>
+            <p><strong>Description:</strong> <%= donation.description %></p>
+          <% } %>
+
+          <!-- STATUS-SPECIFIC MESSAGES -->
+          <% if (donation.status === "delivered") { %>
+            <% if (currentUser.role === "donor") { %>
+              <p class="fw-bold text-success">✓ DELIVERED</p>
+            <% } else if (currentUser.role === "ngo") { %>
+              <p class="fw-bold text-success">✓ FOOD RECEIVED</p>
+            <% } else if (currentUser.role === "volunteer") { %>
+              <p class="fw-bold text-success">✓ DELIVERY COMPLETED</p>
+            <% } %>
+          <% } %>
+
+          <!-- ACTION BUTTONS -->
+          <div class="d-flex gap-2 flex-wrap mt-4">
+            <% if (currentUser.role === "donor" && String(donation.donor._id) === String(currentUser._id) && donation.status === "pending") { %>
+              <a href="/donations/<%= donation._id %>/edit" class="btn btn-outline-primary">Edit</a>
+              <form action="/donations/<%= donation._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this donation?');">
+                <button type="submit" class="btn btn-outline-danger">Delete</button>
+              </form>
+            <% } %>
+
+            <% if (currentUser.role === "ngo" && donation.status === "pending") { %>
+              <form action="/donations/<%= donation._id %>/accept?_method=PATCH" method="POST">
+                <button type="submit" class="btn btn-warning fw-semibold">Accept Food</button>
+              </form>
+            <% } %>
+
+            <% if (currentUser.role === "volunteer" && donation.status === "accepted" && donation.volunteer && String(donation.volunteer._id) === String(currentUser._id)) { %>
+              <form action="/donations/<%= donation._id %>/pickup?_method=PATCH" method="POST">
+                <button type="submit" class="btn btn-warning fw-semibold">Mark Picked Up</button>
+              </form>
+            <% } %>
+
+            <% if (currentUser.role === "volunteer" && donation.status === "picked_up" && donation.volunteer && String(donation.volunteer._id) === String(currentUser._id)) { %>
+              <form action="/donations/<%= donation._id %>/deliver?_method=PATCH" method="POST">
+                <button type="submit" class="btn btn-success fw-semibold">Mark Delivered</button>
+              </form>
+            <% } %>
+
+            <a href="/donations" class="btn btn-outline-secondary">Back to List</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

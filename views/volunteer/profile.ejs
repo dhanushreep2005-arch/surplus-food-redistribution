@@ -1,0 +1,22 @@
+<%- include("../partials/navbar") %>
+<%- include("../partials/flash") %>
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+      <div class="card profile-card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h4 class="fw-bold mb-4">Volunteer Profile</h4>
+          <p><strong>Name:</strong> <%= user.name %></p>
+          <p><strong>Email:</strong> <%= user.email %></p>
+          <p><strong>Phone:</strong> <%= user.phone %></p>
+          <p><strong>Address:</strong> <%= user.address %></p>
+          <p><strong>Role:</strong> <span class="badge bg-primary text-uppercase"><%= user.role %></span></p>
+          <p class="mb-0"><strong>Joined:</strong> <%= user.createdAt.toDateString() %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>
