@@ -32,6 +32,19 @@ async function seedDatabase() {
 
   const hashedPassword = await bcrypt.hash("password123", 10);
 
+  // SAMPLE coordinates are labelled demo locality centroids for Bengaluru only.
+  // They are not surveyed GPS of a real building. Mysuru and Mangaluru records
+  // keep address strings and are left without coordinates.
+  const SAMPLE = {
+    MG_ROAD: { lat: 12.9756, lng: 77.6066 }, // SAMPLE: MG Road, Bengaluru
+    INDIRANAGAR: { lat: 12.9784, lng: 77.6408 }, // SAMPLE: Indiranagar, Bengaluru
+    JAYANAGAR: { lat: 12.925, lng: 77.5938 }, // SAMPLE: Jayanagar, Bengaluru
+    BASAVANAGUDI: { lat: 12.9422, lng: 77.5736 }, // SAMPLE: Basavanagudi, Bengaluru
+    KORAMANGALA: { lat: 12.9352, lng: 77.6245 }, // SAMPLE: Koramangala, Bengaluru
+    HSR_LAYOUT: { lat: 12.9121, lng: 77.6446 }, // SAMPLE: HSR Layout, Bengaluru
+    VIDYARANYAPURA: { lat: 13.0765, lng: 77.5577 }, // SAMPLE: Vidyaranyapura, Bengaluru
+  };
+
   // ---------------- USERS ----------------
   const donors = await User.insertMany([
     {
@@ -41,6 +54,8 @@ async function seedDatabase() {
       role: "donor",
       phone: "9845012345",
       address: "MG Road, Bengaluru, Karnataka",
+      lat: SAMPLE.MG_ROAD.lat,
+      lng: SAMPLE.MG_ROAD.lng,
     },
     {
       name: "Priya Sharma",
@@ -49,6 +64,8 @@ async function seedDatabase() {
       role: "donor",
       phone: "9845098765",
       address: "Indiranagar, Bengaluru, Karnataka",
+      lat: SAMPLE.INDIRANAGAR.lat,
+      lng: SAMPLE.INDIRANAGAR.lng,
     },
     {
       name: "Suresh Iyer",
@@ -68,6 +85,8 @@ async function seedDatabase() {
       role: "ngo",
       phone: "8023456789",
       address: "Jayanagar, Bengaluru, Karnataka",
+      lat: SAMPLE.JAYANAGAR.lat,
+      lng: SAMPLE.JAYANAGAR.lng,
     },
     {
       name: "Annapurna Trust",
@@ -76,6 +95,8 @@ async function seedDatabase() {
       role: "ngo",
       phone: "8023456790",
       address: "Basavanagudi, Bengaluru, Karnataka",
+      lat: SAMPLE.BASAVANAGUDI.lat,
+      lng: SAMPLE.BASAVANAGUDI.lng,
     },
     {
       name: "Sneha Sadan NGO",
@@ -95,6 +116,8 @@ async function seedDatabase() {
       role: "volunteer",
       phone: "7845012345",
       address: "Koramangala, Bengaluru, Karnataka",
+      lat: SAMPLE.KORAMANGALA.lat,
+      lng: SAMPLE.KORAMANGALA.lng,
     },
     {
       name: "Divya Reddy",
@@ -103,6 +126,8 @@ async function seedDatabase() {
       role: "volunteer",
       phone: "7845067890",
       address: "HSR Layout, Bengaluru, Karnataka",
+      lat: SAMPLE.HSR_LAYOUT.lat,
+      lng: SAMPLE.HSR_LAYOUT.lng,
     },
     {
       name: "Kiran Kumar",
@@ -111,6 +136,8 @@ async function seedDatabase() {
       role: "volunteer",
       phone: "7845011223",
       address: "Vidyaranyapura, Bengaluru, Karnataka",
+      lat: SAMPLE.VIDYARANYAPURA.lat,
+      lng: SAMPLE.VIDYARANYAPURA.lng,
     },
     {
       name: "Meera Pillai",
@@ -330,7 +357,27 @@ async function seedDatabase() {
     },
   ];
 
-  const donations = await Donation.insertMany(donationData);
+  function sampleCoordsForDonationLocation(location) {
+    if (location === "MG Road, Bengaluru") return SAMPLE.MG_ROAD;
+    if (location === "Indiranagar, Bengaluru") return SAMPLE.INDIRANAGAR;
+    if (location === "Jayanagar, Bengaluru") return SAMPLE.JAYANAGAR;
+    if (location === "Basavanagudi, Bengaluru") return SAMPLE.BASAVANAGUDI;
+    if (location === "HSR Layout, Bengaluru") return SAMPLE.HSR_LAYOUT;
+    if (location === "Vidyaranyapura, Bengaluru") return SAMPLE.VIDYARANYAPURA;
+    return null; // Mysuru and Mangaluru keep address text only
+  }
+
+  const donationsToInsert = donationData.map((donation) => {
+    const row = { ...donation, remainingQuantity: donation.quantity };
+    const coords = sampleCoordsForDonationLocation(donation.location);
+    if (coords) {
+      row.lat = coords.lat;
+      row.lng = coords.lng;
+    }
+    return row;
+  });
+
+  const donations = await Donation.insertMany(donationsToInsert);
   console.log("Donations seeded:", donations.length);
 
   // ---------------- REQUESTS ----------------

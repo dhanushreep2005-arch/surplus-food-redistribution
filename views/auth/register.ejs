@@ -35,6 +35,18 @@
                 <textarea name="address" class="form-control" rows="2" placeholder="Your full address" required></textarea>
               </div>
 
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Latitude (optional)</label>
+                  <input type="number" name="lat" class="form-control" step="any" min="-90" max="90" placeholder="Leave blank if unknown">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Longitude (optional)</label>
+                  <input type="number" name="lng" class="form-control" step="any" min="-180" max="180" placeholder="Leave blank if unknown">
+                </div>
+              </div>
+              <p class="form-text mt-n2 mb-3">Optional. Enter both values only if you already know them. Do not guess. Address is still required.</p>
+
               <div class="mb-4">
                 <label class="form-label">I am registering as</label>
                 <select name="role" class="form-select" required>

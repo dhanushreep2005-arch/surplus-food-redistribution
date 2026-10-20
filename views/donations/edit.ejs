@@ -55,6 +55,20 @@
               <input type="text" name="location" class="form-control" value="<%= donation.location %>" required>
             </div>
 
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Latitude (optional)</label>
+                <input type="number" name="lat" class="form-control" step="any" min="-90" max="90"
+                  value="<%= donation.lat != null ? donation.lat : "" %>" placeholder="Leave blank if unknown">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Longitude (optional)</label>
+                <input type="number" name="lng" class="form-control" step="any" min="-180" max="180"
+                  value="<%= donation.lng != null ? donation.lng : "" %>" placeholder="Leave blank if unknown">
+              </div>
+            </div>
+            <p class="form-text mt-n2 mb-3">Optional. Enter both values only if you already know them. Leave both blank to keep existing coordinates unchanged.</p>
+
             <div class="mb-4">
               <label class="form-label">Description (optional)</label>
               <textarea name="description" class="form-control" rows="3"><%= donation.description %></textarea>

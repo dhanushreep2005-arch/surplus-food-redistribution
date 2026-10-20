@@ -3,6 +3,26 @@ const Donation = require("../models/Donation");
 const Pickup = require("../models/Pickup");
 const User = require("../models/User");
 const { isExpired } = require("../utils/urgency");
+const { parseOptionalLatLng } = require("../utils/coordinates");
+
+function nextRemainingQuantity(donation, newQuantity) {
+  const oldQuantity = Number(donation.quantity);
+  let remaining = donation.remainingQuantity;
+  if (remaining === undefined || remaining === null) {
+    remaining = oldQuantity;
+  } else {
+    remaining = Number(remaining);
+  }
+
+  // No allocation yet: keep remaining in sync with the posted quantity.
+  if (remaining === oldQuantity) {
+    remaining = newQuantity;
+  } else {
+    remaining = Math.min(remaining, newQuantity);
+  }
+
+  return Math.max(0, Math.min(remaining, newQuantity));
+}
 
 // GET /donations  -> list all donations (any logged-in user can browse)
 module.exports.index = async (req, res) => {
@@ -31,10 +51,18 @@ module.exports.createDonation = async (req, res) => {
   try {
     const donorId = req.session.currentUser._id;
 
+    const parsedCoords = parseOptionalLatLng(req.body.lat, req.body.lng);
+    if (parsedCoords.error) {
+      req.session.errorMsg = parsedCoords.error;
+      return res.redirect("/donations/new");
+    }
+
+    const quantity = Number(req.body.quantity);
     const newDonation = new Donation({
       foodName: req.body.foodName,
       foodType: req.body.foodType,
-      quantity: req.body.quantity,
+      quantity,
+      remainingQuantity: quantity,
       unit: req.body.unit,
       preparedAt: req.body.preparedAt,
       expiryAt: req.body.expiryAt,
@@ -43,6 +71,11 @@ module.exports.createDonation = async (req, res) => {
       donor: donorId,
       status: "pending",
     });
+
+    if (parsedCoords.coords) {
+      newDonation.lat = parsedCoords.coords.lat;
+      newDonation.lng = parsedCoords.coords.lng;
+    }
 
     await newDonation.save();
     req.session.successMsg = "Food donation posted successfully!";
@@ -113,16 +146,29 @@ module.exports.updateDonation = async (req, res) => {
     return res.redirect("/donations");
   }
 
-  await Donation.findByIdAndUpdate(id, {
-    foodName: req.body.foodName,
-    foodType: req.body.foodType,
-    quantity: req.body.quantity,
-    unit: req.body.unit,
-    preparedAt: req.body.preparedAt,
-    expiryAt: req.body.expiryAt,
-    location: req.body.location,
-    description: req.body.description,
-  });
+  const parsedCoords = parseOptionalLatLng(req.body.lat, req.body.lng);
+  if (parsedCoords.error) {
+    req.session.errorMsg = parsedCoords.error;
+    return res.redirect(`/donations/${id}/edit`);
+  }
+
+  const newQuantity = Number(req.body.quantity);
+  donation.foodName = req.body.foodName;
+  donation.foodType = req.body.foodType;
+  donation.remainingQuantity = nextRemainingQuantity(donation, newQuantity);
+  donation.quantity = newQuantity;
+  donation.unit = req.body.unit;
+  donation.preparedAt = req.body.preparedAt;
+  donation.expiryAt = req.body.expiryAt;
+  donation.location = req.body.location;
+  donation.description = req.body.description;
+
+  if (parsedCoords.coords) {
+    donation.lat = parsedCoords.coords.lat;
+    donation.lng = parsedCoords.coords.lng;
+  }
+
+  await donation.save();
 
   req.session.successMsg = "Donation updated successfully.";
   res.redirect(`/donations/${id}`);

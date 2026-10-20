@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const Donation = require("../models/Donation");
 const Pickup = require("../models/Pickup");
+const { parseOptionalLatLng } = require("../utils/coordinates");
 
 // GET /register
 module.exports.renderRegisterForm = (req, res) => {
@@ -22,6 +23,12 @@ module.exports.register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const parsedCoords = parseOptionalLatLng(req.body.lat, req.body.lng);
+    if (parsedCoords.error) {
+      req.session.errorMsg = parsedCoords.error;
+      return res.redirect("/register");
+    }
+
     const newUser = new User({
       name,
       email,
@@ -30,6 +37,11 @@ module.exports.register = async (req, res) => {
       phone,
       address,
     });
+
+    if (parsedCoords.coords) {
+      newUser.lat = parsedCoords.coords.lat;
+      newUser.lng = parsedCoords.coords.lng;
+    }
 
     await newUser.save();
 

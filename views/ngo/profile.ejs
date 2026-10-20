@@ -11,6 +11,9 @@
           <p><strong>Email:</strong> <%= user.email %></p>
           <p><strong>Phone:</strong> <%= user.phone %></p>
           <p><strong>Address:</strong> <%= user.address %></p>
+          <% if (user.lat != null && user.lng != null) { %>
+            <p><strong>Coordinates:</strong> <%= user.lat %>, <%= user.lng %></p>
+          <% } %>
           <p><strong>Role:</strong> <span class="badge bg-info text-dark text-uppercase"><%= user.role %></span></p>
           <p class="mb-0"><strong>Joined:</strong> <%= user.createdAt.toDateString() %></p>
         </div>

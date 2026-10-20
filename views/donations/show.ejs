@@ -15,7 +15,11 @@
             <div class="col-md-6">
               <p><strong>Food Type:</strong> <%= donation.foodType %></p>
               <p><strong>Quantity:</strong> <%= donation.quantity %> <%= donation.unit %></p>
+              <p><strong>Remaining quantity:</strong> <%= donation.getRemainingQuantity() %> <%= donation.unit %></p>
               <p><strong>Location:</strong> <%= donation.location %></p>
+              <% if (donation.lat != null && donation.lng != null) { %>
+                <p><strong>Coordinates:</strong> <%= donation.lat %>, <%= donation.lng %></p>
+              <% } %>
               <p><strong>Prepared At:</strong> <%= donation.preparedAt.toLocaleString() %></p>
               <p><strong>Expiry At:</strong> <%= donation.expiryAt.toLocaleString() %></p>
             </div>
